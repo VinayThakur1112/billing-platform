@@ -20,8 +20,10 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(BASE_DIR)
 
-load_dotenv(BASE_DIR / '.env')
+# load_dotenv('/Users/vinay/Projects/billing-platform/.env')
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 print(os.getenv("DATABASE_NAME"))
 
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "apps.accounts",
     "django_celery_results",
+    "apps.billing.apps.BillingConfig",
 ]
 
 MIDDLEWARE = [
@@ -94,13 +97,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOST"),
         "PORT": "5432",
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -143,3 +147,7 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_TIMEZONE = "UTC"
+
+CELERY_TASK_ROUTES = {
+    "apps.billing.tasks.*": {"queue": "billing"},
+}

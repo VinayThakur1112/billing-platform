@@ -1,6 +1,19 @@
 from celery import shared_task
+import logging
+logger = logging.getLogger(__name__)
 
-@shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=5, retry_kwargs={"max_retries": 3})
-def test_billing_task(self, account_id):
-    print(f"Running billing task for account {account_id}")
-    return {"status": "SUCCESS", "account_id": account_id}
+
+@shared_task(bind=True, 
+    autoretry_for=(Exception,), 
+    retry_backoff=10, 
+    retry_kwargs={"max_retries": 5},
+    retry_jitter=True,
+    acks_late=True,
+)
+def process_billing_event(self, billing_event_id: int):
+    """
+    Safe billing task:
+    - retries on failure
+    - won't lose task if worker crashes
+    """
+    logger.info("Processing billing event %s", billing_event_id)
