@@ -14,22 +14,23 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG") == "True"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+print(os.getenv("DATABASE_NAME"))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9%s7_z8o!=qgex8cs+l=sq+sl493s=fw+^b@4+$5h5^vu(5v%j'
+SECRET_KEY = 'django-insecure-qrjzmiqr96uyl$y4k+@a54mz9ik4lizycmeyb=**&qy)0++2un'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -46,11 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'apps.accounts',
-    'apps.billing',
-    'apps.invoices',
-    'apps.usage',
+    "apps.accounts",
+    "django_celery_results",
 ]
 
 MIDDLEWARE = [
@@ -86,12 +84,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": "5432",
     }
 }
+
+
 
 
 # Password validation
@@ -130,10 +141,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
-# Celery configuration
-CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_TIMEZONE = "UTC"
