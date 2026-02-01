@@ -17,7 +17,7 @@ class Account(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'arbor.accounts_details'
+        db_table = 'billing_account'
 
     def __str__(self):
         return self.name
@@ -37,7 +37,7 @@ class Subscription(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'arbor.accounts_subscriptions'
+        db_table = 'billing_subscription'
 
 
 class BillingEvent(models.Model):
@@ -82,7 +82,7 @@ class BillingEvent(models.Model):
 
     class Meta:
         unique_together = ("event_type", "reference_id")
-        db_table = 'arbor.accounts_billing_events'
+        db_table = 'billing_event'
 
 
 class Invoice(models.Model):
@@ -110,10 +110,15 @@ class Invoice(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'arbor.accounts_invoices'
+        db_table = 'billing_invoice'
 
 
 class InvoiceLineItem(models.Model):
+    id = models.UUIDField(
+        primary_key=True, 
+        default=uuid.uuid4, 
+        editable=False
+    )
     invoice = models.ForeignKey(
         Invoice, 
         related_name="line_items", 
@@ -132,4 +137,4 @@ class InvoiceLineItem(models.Model):
     )
 
     class Meta:
-        db_table = 'arbor.accounts_invoice_line_items'
+        db_table = 'billing_invoice_line_item'
