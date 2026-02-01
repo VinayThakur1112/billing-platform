@@ -74,4 +74,4 @@ class AccountBalance(models.Model):
     )
 
     class Meta:
-        db_table = "account_balances"
+        db_table = "account_balance"
