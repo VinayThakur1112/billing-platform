@@ -38,9 +38,7 @@ class Subscription(models.Model):
         on_delete=models.CASCADE, 
         related_name="subscriptions"
     )
-    plan_name = models.CharField(
-        max_length=100
-    )
+    # plan = models.ForeignKey("plans.Plan", on_delete=models.PROTECT)
     start_date = models.DateField()
     end_date = models.DateField(
         blank=True, 

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "django_celery_results",
     "apps.billing.apps.BillingConfig",
+    "apps.plans.apps.PlansConfig",
 ]
 
 MIDDLEWARE = [
