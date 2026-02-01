@@ -16,6 +16,9 @@ class Account(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = 'arbor.accounts_details'
+
     def __str__(self):
         return self.name
     
@@ -24,11 +27,17 @@ class Subscription(models.Model):
     account = models.ForeignKey(
         Account, on_delete=models.CASCADE
     )
-    service_name = models.CharField(max_length=100)  # voice, data, nrc, etc
+    service_name = models.CharField(
+        max_length=100
+    )  # voice, data, nrc, etc
+
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'arbor.accounts_subscriptions'
 
 
 class BillingEvent(models.Model):
@@ -61,6 +70,7 @@ class BillingEvent(models.Model):
     reference_id = models.CharField(
         max_length=100
     )  # CDR ID / Document ID / etc
+
     amount = models.DecimalField(
         max_digits=12, 
         decimal_places=2
@@ -72,11 +82,18 @@ class BillingEvent(models.Model):
 
     class Meta:
         unique_together = ("event_type", "reference_id")
+        db_table = 'arbor.accounts_billing_events'
 
 
 class Invoice(models.Model):
+    id = models.UUIDField(
+        primary_key=True, 
+        default=uuid.uuid4, 
+        editable=False
+    )
     account = models.ForeignKey(
-        Account, on_delete=models.CASCADE
+        Account, 
+        on_delete=models.CASCADE
     )
     invoice_number = models.CharField(
         max_length=50, unique=True
@@ -91,6 +108,9 @@ class Invoice(models.Model):
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'arbor.accounts_invoices'
 
 
 class InvoiceLineItem(models.Model):
@@ -110,3 +130,6 @@ class InvoiceLineItem(models.Model):
         null=True, 
         blank=True
     )
+
+    class Meta:
+        db_table = 'arbor.accounts_invoice_line_items'
