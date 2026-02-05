@@ -40,7 +40,7 @@ class PlanCreateView(APIView):
 class PlanListView(APIView):
     def get(self, request):
         plans = Plan.objects.filter(
-            is_active=True).order_by("created_at")
+            active=True).order_by("created_at")
         
         serializer = PlanReadSerializer(plans, many=True)
         return Response(serializer.data)

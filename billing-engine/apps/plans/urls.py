@@ -8,15 +8,13 @@ from .views import (
 )
 
 
-router = DefaultRouter()
-router.register(
-    r"plans", PlanViewSet, basename="plan"
-)
+# router = DefaultRouter()
+# router.register(
+#     r"plans", PlanViewSet, basename="plan"
+# )
 
 urlpatterns = [
-    path("create/", 
-         PlanCreateView.as_view(), # Converts the class into a callable view function
-         name="plan-create"),
+    path("", PlanListView.as_view(), name="plan-list"),
+    path("create/", PlanCreateView.as_view(), name="plan-create"),
     path("<uuid:plan_id>/", PlanDetailView.as_view(), name="plan-detail"),
-    path("", include(router.urls)),
 ]
