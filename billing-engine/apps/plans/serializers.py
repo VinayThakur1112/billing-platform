@@ -22,9 +22,19 @@ class PlanCreateSerializer(serializers.ModelSerializer):
                 "Plan with this code already exists."
             )
         return value
+
+    def validate_price(self, value):
+        if value <=0:
+            raise serializers.ValidationError(
+                "Price must be greater than zero."
+            )
+        return value
     
     def validate(self, attrs):
-        # Future business rules go here
+        if attrs["billing_cycle"] == 'yearly' and attrs["price"] < 10:
+            raise serializers.ValidationError(
+                "Yearly plans must have a minimum price of 10."
+            )
         return attrs
 
 class PlanUpdateSerializer(serializers.ModelSerializer):
@@ -37,6 +47,13 @@ class PlanUpdateSerializer(serializers.ModelSerializer):
             "currency",
             "active",
         ]
+    
+    def validate_price(self, value):
+        if value <=0:
+            raise serializers.ValidationError(
+                "Price must be greater than zero."
+            )
+        return value
 
 class PlanReadSerializer(serializers.ModelSerializer):
     class Meta:
