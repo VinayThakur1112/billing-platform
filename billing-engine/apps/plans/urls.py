@@ -16,5 +16,6 @@ from .views import (
 urlpatterns = [
     path("", PlanListView.as_view(), name="plan-list"),
     path("create/", PlanCreateView.as_view(), name="plan-create"),
+    # path("update/<uuid:plan_id>/", PlanDetailView.as_view(), name="plan-update"),
     path("<uuid:plan_id>/", PlanDetailView.as_view(), name="plan-detail"),
 ]
